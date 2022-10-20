@@ -1,0 +1,62 @@
+{
+    "data":
+    [
+        {
+            "id":38,
+            "product_id":15,
+            "name":"Teste Teste",
+            "description":null,
+            "code":"OD40EBD99",
+            "pid":null,"price":1000,
+            "is_active":true,
+            "allow_affiliates":false,
+            "affiliates_percentage":null,
+            "allow_credit_card":true,
+            "allow_two_credit_cards":false,
+            "allow_credit_card_installments":true,
+            "producer_pays_interest":false,
+            "credit_card_installments_options":[1,2],
+            "allow_bank_slip":true,
+            "bank_slip_days_due":1,
+            "allow_bank_slip_installments":false,
+            "bank_slip_installments_limit":2,
+            "installment_fee_bank_slip":null,
+            "allow_pix":true,
+            "allow_email_confirmation":false,
+            "request_address_after_purchase":false,
+            "members_portal_id":null,
+            "members_classroom_id":null,
+            "created_at":"2022-09-30T19:06:40.000000Z",
+            "updated_at":"2022-10-11T12:49:18.000000Z",
+            "batch":null,
+            "freight":
+            {
+                "fixed_price":null,
+                "type":"shipping_company",
+                "start_day":1,
+                "end_day":9,
+                "is_pac":true,
+                "is_sedex":true,
+                "free_states":["SC","SP"],
+                "zip_code":"13175250",
+                "weight":5,
+                "length":5,
+                "width":10,
+                "height":5
+                }
+                },
+    {"id":39,"product_id":15,"name":"Teste Teste 3","description":null,"code":"O7F055D1C","pid":null,"price":2000,"is_active":true,"allow_affiliates":false,"affiliates_percentage":null,"allow_credit_card":true,"allow_two_credit_cards":false,"allow_credit_card_installments":true,"producer_pays_interest":false,"credit_card_installments_options":[1,2,3,4],"allow_bank_slip":true,"bank_slip_days_due":1,"allow_bank_slip_installments":false,"bank_slip_installments_limit":2,"installment_fee_bank_slip":null,"allow_pix":true,"allow_email_confirmation":false,"request_address_after_purchase":false,"members_portal_id":null,"members_classroom_id":null,"created_at":"2022-09-30T19:40:21.000000Z","updated_at":"2022-10-10T14:22:56.000000Z","batch":null,"freight":{"fixed_price":null,"type":"free","start_day":1,"end_day":5,"is_pac":false,"is_sedex":false,"free_states":[]}},{"id":40,"product_id":15,"name":"C\u00f3pia de - [Teste Teste]","description":null,"code":"OCBAEB93D","pid":null,"price":1000,"is_active":true,"allow_affiliates":false,"affiliates_percentage":null,"allow_credit_card":true,"allow_two_credit_cards":false,"allow_credit_card_installments":true,"producer_pays_interest":false,"credit_card_installments_options":[1,2],"allow_bank_slip":true,"bank_slip_days_due":1,"allow_bank_slip_installments":false,"bank_slip_installments_limit":1,"installment_fee_bank_slip":null,"allow_pix":true,"allow_email_confirmation":false,"request_address_after_purchase":false,"members_portal_id":null,"members_classroom_id":null,"created_at":"2022-09-30T19:42:20.000000Z","updated_at":"2022-09-30T19:42:20.000000Z","batch":null,"freight":{"fixed_price":null,"type":"shipping_company","start_day":1,"end_day":9,"is_pac":true,"is_sedex":true,"free_states":["SC","SP"],"zip_code":"13175250","weight":5,"length":5,"width":10,"height":5}}],"links":{"first":"https:\/\/phoenix.ticto.io\/api\/v1\/private\/products\/15\/manage\/offers?page=1","last":"https:\/\/phoenix.ticto.io\/api\/v1\/private\/products\/15\/manage\/offers?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo; Anterior","active":false},
+    {
+        "url":"https:\/\/phoenix.ticto.io\/api\/v1\/private\/products\/15\/manage\/offers?page=1",
+        "label":"1",
+        "active":true},
+    {   "url":null,
+        "label":"Pr\u00f3ximo &raquo;",
+        "active":false
+    }],
+    "path":"https:\/\/phoenix.ticto.io\/api\/v1\/private\/products\/15\/manage\/offers",
+    "per_page":25,
+    "to":3,
+    "total":3
+}
+}
