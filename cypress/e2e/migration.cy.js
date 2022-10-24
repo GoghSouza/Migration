@@ -1,23 +1,14 @@
-import './function.cy'
-import produtosJson from "./produtos.json"
+import './function.cy';
 
-let nomeProduto = [];
-let tipoProduto = [];
-let categoriaProduto = [];
-let ofertaProduto = [];
-let nomeOferta = [];
+let categoriaProduto;
+let nomeProduto;
+let tipoProduto;
+let nomeOferta;
 
 let nomeProdutoDashAPI = [];
 let tipoProdutoDashAPI = [];
 let categoriaProdutoDashAPI = [];
-let ofertaProdutoDashAPI = [];
-let nomeOfertaDashAPI = [];
-
-let nomeProdutoDash = [];
-let tipoProdutoDash = [];
-let categoriaProdutoDash = [];
-let ofertaProdutoDash = [];
-let nomeOfertaDash = [];
+let idProdutoDashAPI = [];
 
 function Dicionario(dados){
   if(dados == "Produto Físico" || dados == "physical") return "Físico"
@@ -29,153 +20,125 @@ function Dicionario(dados){
   else return dados
 }
 
-function comparar(apiNome,apiTipo,apiCategoria,nomeLegado,tipoLegado,categoriaLegado){
+function ProdutosLegado(){
 
-  for(let i = 0;i < nomeLegado.length;i++){
-  const indice = apiNome.indexOf(nomeLegado[i]);
-  expect(apiNome[indice]).to.include(nomeLegado[i]);
-  expect(Dicionario(apiTipo[indice])).to.include(Dicionario(tipoLegado[i]));
-  expect(apiCategoria[indice]).to.include(categoriaLegado[i]);
-  
-  /*const apiNomeOferta = apiOferta[indice];
-  const nomeLegado = ofertaLegado[i];
-  for(let i = 0;i<nomeLegado.length;i++){
-    expect(apiNomeOferta).to.include(nomeLegado[i]);
-  }*/
-  }
-}
-
-function produtosLegado(email,senha){
-  cy.visit("https://app.ticto.com.br/login/?5ebe2294ecd0e0f08eab7690d2a6ee69=13621569c04c27dde4aa00c3ef3ddbac");
-  cy.get('#col-sm').type(email);
-  cy.get('#senha').type(senha);
-  cy.get('.login-password > .btn').click().wait(2000);
-  cy.visit("https://app.ticto.com.br/product#/");
+  cy.legadoLogin();
   cy.get('tbody > tr > [data-title="Nome"]').its('length').then((indice)=>{
     for(let i = 0;i<indice;i++){
-      //cy.visit("https://app.ticto.com.br/product#/");
+      cy.visit("https://app.ticto.com.br/product#/");
       cy.get('tbody > tr > [data-title="Nome"]').eq(i).invoke('text').then((nome)=>{
-        nomeProduto.push(nome)
+        nomeProduto = nome
       })
       cy.get('tbody > tr > [data-title="Tipo"]').eq(i).invoke('text').then((tipo)=>{
-        tipoProduto.push(tipo)
+        tipoProduto = tipo
       })
       cy.get('tbody > tr > [data-title="Categoria"]').eq(i).invoke('text').then((categoria)=>{
-        categoriaProduto.push(categoria)
+        categoriaProduto = categoria
       })
-      /*cy.get('tbody > tr > [data-title="Código"]').eq(i).invoke('text').then((id)=>{
+      cy.get('tbody > tr > [data-title="Código"]').eq(i).invoke('text').then((id)=>{
         cy.visit(`https://app.ticto.com.br/product/${id}/manage/offers#/`)
         cy.get('.text-left').its('length').then((indiceOferta)=>{
           for(let i = 0;i<indiceOferta;i++){
             cy.get('.text-left > .btn').eq(i).wait(500).click({force:true});
             cy.get('a:contains(Editar)').eq(i+1).click({force:true})
-            cy.get('#name').invoke('val').then((nome)=>{
-              cy.log("for"+nome)
-              nomeOferta.push(nome)
+            cy.get('#name').invoke('val').then((nomeFor)=>{
+              nomeOferta = nomeFor
             })
-            cy.log("fora for"+nomeOferta[i]);
-            ofertaProduto = nomeOferta;
+            cy.get('#price').invoke('val').then((valorFor)=>{
+              VerificaNome(nomeProduto,tipoProduto,categoriaProduto,nomeOferta,valorFor);
+            })
             cy.get('#linkProductOffers').click().wait(500);
           }
-          //ofertaProduto.push(nomeOferta);
-          //nomeOferta = [];
         })
-          cy.log(nomeOferta[0]);
-          cy.log(ofertaProduto[0]);
-      })*/
+      })
     }
   })
 }
 
-describe("Teste",()=>{
-  const email = "mateus.souza@ticto.com.br";
-  const senha = "GoghSouza1@";
-  
-  it('Verificar API',()=>{
-    produtosLegado(email,senha);
-
-    cy.token().then((response)=>{
-      cy.produto(response.body.accessToken.token).then((response)=>{
-        let produtos = response.body.data;
-
-        const itens = [
-          [produtos.map(nome => nome.name)],
-          [produtos.map(nome => nome.id)],
-          [produtos.map(nome => nome.category)],
-          [produtos.map(nome => nome.type)]
-        ]
-
-        comparar(
-        produtos.map(nome => nome.name),
-        produtos.map(nome => nome.type),
-        produtos.map(nome => nome.category),
-        nomeProduto,
-        tipoProduto,
-        categoriaProduto)
-      });
-    })
+function VerificaNome (nome,tipo,categoria,nomeOffer,valorOffer){
+  cy.produto().then((response)=>{
+    nomeProdutoDashAPI = response.body.data.map(nome => nome.name);
+    idProdutoDashAPI = response.body.data.map(id => id.id);
+    categoriaProdutoDashAPI = response.body.data.map(categoria => categoria.category);
+    tipoProdutoDashAPI = response.body.data.map(tipo => tipo.type);
+    
+    Comparar(nomeProdutoDashAPI,tipoProdutoDashAPI,categoriaProdutoDashAPI,nome,tipo,categoria,idProdutoDashAPI,nomeOffer,valorOffer)
   })
-  it('Verificar Nova Dash API',()=>{
+}
 
-    produtosLegado(email,senha);
+function Comparar(apiNome,apiTipo,apiCategoria,nomeLegado,tipoLegado,categoriaLegado,idProduto,nomeOferta,valorOferta){
+  const indice = apiNome.indexOf(nomeLegado);
+  expect(apiNome[indice]).to.include(nomeLegado);
+  expect(Dicionario(apiTipo[indice])).to.include(Dicionario(tipoLegado));
+  expect(apiCategoria[indice]).to.include(categoriaLegado);
+  
+  cy.ofertas(idProduto[indice]).then((response)=>{
+    let jsonOferta = response.body.data;
+    let nome2Ofertas = jsonOferta.map(nome => nome.name);
+    let valor2Ofertas = jsonOferta.map(nome => nome.price);
+    const ind = nome2Ofertas.indexOf(nomeOferta);
+    const sempontoevirgula = valorOferta.replace(/,/g, "").replace(/\./g, "").replace("R$", "").replace(/\s/g, '');
 
-    cy.visit('dash.ticto.com.br')
-    cy.get(':nth-child(3) > .styles_input__481p7 > input').type(email)
-    cy.get(':nth-child(4) > .styles_input__481p7 > input').type(senha)
-    cy.get('button').click().wait(5000)
-    cy.visit("https://dash.ticto.com.br/product")
+    expect(nome2Ofertas[ind]).to.include(nomeOferta);
+    expect((valor2Ofertas[ind].toString())).to.include(sempontoevirgula);
+  })
+}
+
+describe("Teste",()=>{
+  it('OK Verificar Produto(Nome, Tipo e Categoria) e Oferta (Nome e Valor) (Front Legado/API Nova Dash)',()=>{
+    ProdutosLegado();
+  })
+  it.only('Verificar Nova Dash API',()=>{
+
+    cy.dashLogin().wait(3000);
     cy.get('.styles_description__5DLnq').its('length').then((indice)=>{
-      cy.log("Indice " + indice)
       for(let i = 0;i<indice;i++){
         cy.get('.styles_description__5DLnq > strong').eq(i).invoke('text').then((nome)=>{
-          nomeProdutoDashAPI.push(nome)
+          nomeProduto = nome
         })
         cy.get('#react-tabs-1 > div.styles_products__cd_hR > div.styles_body__G78fU > div > div:nth-child(4)').eq(i).invoke('text').then((tipo)=>{
-          tipoProdutoDashAPI.push(tipo)
-          cy.log(tipo)
+          tipoProduto = tipo
         })
         cy.get('#react-tabs-1 > div.styles_products__cd_hR > div.styles_body__G78fU > div > div:nth-child(5)').eq(i).invoke('text').then((categoria)=>{
-          categoriaProdutoDashAPI.push(categoria)
+          categoriaProduto = categoria
         })
-        /*cy.get('tbody > tr > [data-title="Código"]').eq(i).invoke('text').then((id)=>{
-        cy.visit(`https://app.ticto.com.br/product/${id}/manage/offers#/`)
-        cy.get('.text-left').its('length').then((indiceOferta)=>{
+        cy.get('.styles_description__5DLnq > :nth-child(2)').eq(i).invoke('text').then((idBruto)=>{
+        const id = idBruto.replace(/ID/g, "").replace(/\./g, "");
+        cy.visit(`https://dash.ticto.com.br/product/${id}/offers`).wait(3000)
+        cy.get('.styles_tbody__8Cc_I > ').its('length').then((indiceOferta)=>{
           for(let i = 0;i<indiceOferta;i++){
-            cy.get('.text-left > .btn').eq(i).click();
-            //cy.get("#linkEditOffer_7750_53688").click({ force: true });
-            cy.get('a:contains(Editar)').eq(i+1).click()
-            cy.get('#name').invoke('text').then((nome)=>{
-              nomeOferta.push(nome);
+            cy.visit(`https://dash.ticto.com.br/product/${id}/offers`).wait(3000);
+            cy.get('[data-title="Ações"] > .small').eq(i).click({force:true}).wait(3000);
+            cy.get(':nth-child(2) > .styles_input__481p7 > input').invoke('val').then((nome)=>{
+              nomeOferta = nome
             })
-            cy.get('#linkProductOffers').click().wait(500);
+            cy.get(':nth-child(4) > .styles_input__481p7 > input').invoke('val').then((valor)=>{
+              //TODO:Comentar essa linha para não verificar e descomentar a linha 120 e comentar 119
+              VerificaNome(nomeProduto,tipoProduto,categoriaProduto,nomeOferta,valor);
+            })
+            cy.dashLogin().wait(2000);
+            //cy.get('.styles_active__CwOAK').click().wait(3000)
           }
-          ofertaProduto.push([nomeProduto[i]],nomeOferta);
-          nomeOferta = [];
+        cy.visit("https://dash.ticto.com.br/product").wait(3000);
         })
-      })*/
-      }})
-
-    cy.token().then((response)=>{
-      cy.produto(response.body.accessToken.token).then((response)=>{
-        let produtos = response.body.data;
-    
-        comparar(
-        produtos.map(nome => nome.name),
-        produtos.map(nome => nome.type),
-        produtos.map(nome => nome.category),
-        nomeProduto,
-        tipoProduto,
-        categoriaProduto)
-      });
-    })
+      })
+    }})
   })
 
-  it('Legado',()=>{
-    produtosLegado(email,senha);
-
-    cy.log("1 "+nomeOferta[0]);
-    cy.log("1 " + nomeOferta[1]);
-    cy.log("1 " + nomeOferta[2]);
+  it("Logar Back",()=>{
+    cy.token().then((response)=>{
+      const token = response.body.accessToken.token
+    cy.request({
+      method: 'POST',
+      url: (`https://dash.ticto.com.br/_next/data/${token}/dashboard.json`),
+      body:
+        {
+          "email": "mateus.souza@ticto.com.br",
+          "password": "GoghSouza1@"
+        },
+    failOnStatusCode: false,  
+    })
+  })
   })
 
   it('Verificar Nova Dash Front',()=>{
@@ -200,7 +163,7 @@ describe("Teste",()=>{
         cy.get('#react-tabs-1 > div.styles_products__cd_hR > div.styles_body__G78fU > div > div:nth-child(5)').eq(i).invoke('text').then((categoria)=>{
           categoriaProdutoDash.push(categoria)
         })
-        /*cy.get('.styles_body__G78fU >').eq(i).contains("Ações").click();
+        cy.get('.styles_body__G78fU >').eq(i).contains("Ações").click();
         cy.get('.dropdown-menu > :nth-child(2)').click();
         cy.get('[data-title="Ações"] > .small').its('length').then((indiceOferta)=>{
           cy.log(indiceOferta)
@@ -211,11 +174,14 @@ describe("Teste",()=>{
             })
             cy.get('.styles_active__CwOAK').click();
           }
+        cy.log("Nome Oferta " + nomeOferta)
+        cy.log("Nome Oferta Dash " + nomeOfertaDash)
         ofertaProdutoDash.push(nomeOfertaDash);
         nomeOfertaDash = [];
         cy.visit("https://dash.ticto.com.br/product")
-        })*/
+        })
 
+        cy.log(ofertaProdutoDash);
         /*cy.get('tbody > tr > [data-title="Código"]').eq(i).invoke('text').then((id)=>{
           cy.visit(`https://app.ticto.com.br/product/${id}/manage/offers#/`)
           cy.get('.text-left').its('length').then((indiceOferta)=>{

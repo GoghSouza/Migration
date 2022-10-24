@@ -16,14 +16,25 @@ Cypress.Commands.add("teste",(nome)=>{
 })
 
 Cypress.Commands.add('legadoLogin',()=>{
-    cy.visit("https://app.ticto.com.br/login/?5ebe2294ecd0e0f08eab7690d2a6ee69=13621569c04c27dde4aa00c3ef3ddbac");
-    cy.get('#col-sm').type(email);
-    cy.get('#senha').type(senha);
-    cy.get('.login-password > .btn').click();
-    cy.visit("https://app.ticto.com.br/product#/");
-    cy.get('tbody > tr > [data-title="Código"]').last().invoke('text').then((id)=>{
+  const email = "mateus.souza@ticto.com.br";
+  const senha = "GoghSouza1@";
 
-    })
+  cy.visit("https://app.ticto.com.br/login/?5ebe2294ecd0e0f08eab7690d2a6ee69=13621569c04c27dde4aa00c3ef3ddbac");
+  cy.get('#col-sm').type(email);
+  cy.get('#senha').type(senha);
+  cy.get('.login-password > .btn').click().wait(2000);
+  cy.visit("https://app.ticto.com.br/product#/");
+})
+
+Cypress.Commands.add('dashLogin',()=>{
+  const email = "mateus.souza@ticto.com.br";
+  const senha = "GoghSouza1@";
+
+    cy.visit('dash.ticto.com.br')
+    cy.get(':nth-child(3) > .styles_input__481p7 > input').type(email)
+    cy.get(':nth-child(4) > .styles_input__481p7 > input').type(senha)
+    cy.get('button').click().wait(5000)
+    cy.visit("https://dash.ticto.com.br/product")
 })
 
 Cypress.Commands.add('token',()=>{
@@ -53,28 +64,32 @@ Cypress.Commands.add('login',()=>{
 })
 
 Cypress.Commands.add('produto',(token)=>{
-    const token2 = "Bearer " + token
+  cy.token().then((response)=>{
+    const token = "Bearer " + response.body.accessToken.token
     cy.request({
         method: 'GET',
         url: ('https://phoenix.ticto.io/api/v1/private/products'),
         headers: 
         {
-            "Authorization": `${token2}`
+            "Authorization": `${token}`
         },
       failOnStatusCode: false,  
       })
+  })
 })
 
-Cypress.Commands.add('ofertas',(token,id)=>{
-  const token2 = "Bearer " + token
-  cy.request({
-      method: 'GET',
-      url: (`https://phoenix.ticto.io/api/v1/private/products/${id}/manage/offers`),
-      headers: 
-      {
-          "Authorization": `${token2}`
-      },
-    failOnStatusCode: false,  
-    })
+Cypress.Commands.add('ofertas',(id)=>{
+  cy.token().then((response)=>{
+    const token = "Bearer " + response.body.accessToken.token
+    cy.request({
+        method: 'GET',
+        url: (`https://phoenix.ticto.io/api/v1/private/products/${id}/manage/offers`),
+        headers: 
+        {
+            "Authorization": `${token}`
+        },
+      failOnStatusCode: false,  
+      })
+  })
 })
 
